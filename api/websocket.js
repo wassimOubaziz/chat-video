@@ -1,4 +1,3 @@
-// api/websocket.js
 const { Server } = require("ws");
 
 let wss;
@@ -10,7 +9,7 @@ module.exports = (req, res) => {
     wss.on("connection", (ws) => {
       ws.on("message", (message) => {
         wss.clients.forEach((client) => {
-          if (client !== ws && client.readyState === WebSocket.OPEN) {
+          if (client !== ws && client.readyState === client.OPEN) {
             client.send(message);
           }
         });
