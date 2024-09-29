@@ -1,15 +1,15 @@
 const express = require("express");
 const { createServer } = require("http");
-const { Server } = require("socket.io"); // Ensure this import is correct
+const { Server } = require("socket.io"); // Correct import for Socket.IO
 const { ExpressPeerServer } = require("peer");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 const httpServer = createServer(app); // Create HTTP server
 const io = new Server(httpServer, {
-  // Pass the HTTP server to Socket.IO
+  // Initialize Socket.IO with HTTP server
   cors: {
-    origin: "*",
+    origin: "*", // Allow all origins; adjust for security
   },
 });
 
@@ -24,12 +24,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/:room", (req, res) => {
-  try {
-    res.render("room", { roomId: req.params.room });
-  } catch (error) {
-    console.error("Error rendering room:", error);
-    res.status(500).send("Internal Server Error");
-  }
+  res.render("room", { roomId: req.params.room });
 });
 
 io.on("connection", (socket) => {
@@ -46,7 +41,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Listen on the correct port
+// Listen on the appropriate port
 const PORT = process.env.PORT || 3030;
 httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
