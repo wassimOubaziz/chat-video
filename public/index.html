@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Chat</title>
+    <style>
+      video {
+        width: 45%;
+        height: auto;
+        border: 1px solid black;
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="localVideo" autoplay playsinline muted></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.11.1/simple-peer.min.js"></script>
+    <script>
+      const localVideo = document.getElementById("localVideo");
+      const remoteVideo = document.getElementById("remoteVideo");
+      const ws = new WebSocket(`ws://${window.location.host}`);
+
+      let peer;
+
+      // Get user media
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          localVideo.srcObject = stream;
+
+          // Initialize the peer
+          peer = new SimplePeer({
+            initiator: location.hash === "#init",
+            trickle: false,
+            stream: stream,
+          });
+
+          // Handle signaling data
+          peer.on("signal", (data) => {
+            ws.send(JSON.stringify(data));
+          });
+
+          // Handle incoming stream
+          peer.on("stream", (stream) => {
+            remoteVideo.srcObject = stream;
+          });
+
+          // Handle incoming WebSocket messages
+          ws.onmessage = (message) => {
+            peer.signal(JSON.parse(message.data));
+          };
+
+          peer.on("error", (err) => {
+            console.error("Peer error:", err);
+          });
+        })
+        .catch((error) => {
+          console.error("Error accessing media devices.", error);
+        });
+    </script>
+  </body>
+</html>
