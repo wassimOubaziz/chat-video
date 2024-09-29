@@ -24,7 +24,12 @@ app.get("/", (req, res) => {
 });
 
 app.get("/:room", (req, res) => {
-  res.render("room", { roomId: req.params.room });
+  try {
+    res.render("room", { roomId: req.params.room });
+  } catch (error) {
+    console.error("Error rendering room:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 io.on("connection", (socket) => {
