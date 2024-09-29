@@ -1,13 +1,12 @@
 {
-  "name": "chat-app2",
+  "name": "video-voice-chat",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "wassim oubaziz",
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.0",
