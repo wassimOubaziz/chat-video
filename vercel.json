@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "index.js", "use": "@vercel/node" },
-    { "src": "api/websocket.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/api/websocket", "dest": "/api/websocket.js" },
-    { "src": "(.*)", "dest": "/index.js" }
-  ]
+  "builds": [{ "src": "server.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "server.js" }]
 }
