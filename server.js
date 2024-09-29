@@ -1,17 +1,22 @@
 const express = require("express");
 const { createServer } = require("http");
-const { Server } = require("socket.io");
+const { Server } = require("socket.io"); // Ensure this import is correct
 const { ExpressPeerServer } = require("peer");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server);
+const httpServer = createServer(app); // Create HTTP server
+const io = new Server(httpServer, {
+  // Pass the HTTP server to Socket.IO
+  cors: {
+    origin: "*",
+  },
+});
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-const peerServer = ExpressPeerServer(server, { debug: true });
+const peerServer = ExpressPeerServer(httpServer, { debug: true });
 app.use("/peerjs", peerServer);
 
 app.get("/", (req, res) => {
@@ -36,7 +41,8 @@ io.on("connection", (socket) => {
   });
 });
 
-// Use Vercel's serverless function approach
-module.exports = (req, res) => {
-  server(req, res);
-};
+// Listen on the correct port
+const PORT = process.env.PORT || 3030;
+httpServer.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
