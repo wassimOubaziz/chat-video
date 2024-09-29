@@ -22,9 +22,10 @@
       const remoteVideo = document.getElementById("remoteVideo");
 
       // Determine the WebSocket protocol based on the current page protocol
-      console.log(window.location.protocol);
-      const protocol = "wss";
-      const ws = new WebSocket(`wss://${window.location.host}/api/websocket`);
+      const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+      const ws = new WebSocket(
+        `${protocol}://${window.location.host}/api/websocket`
+      );
 
       let peer;
 
